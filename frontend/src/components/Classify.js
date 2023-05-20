@@ -1,6 +1,5 @@
 import React from "react";
-import { Text, Flex, Box, Button } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { Text, Box } from "@chakra-ui/react";
 import axios from "axios";
 
 class Classify extends React.Component {
