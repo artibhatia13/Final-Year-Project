@@ -1,26 +1,44 @@
-import React from 'react';
-import { Text, Flex, Box, Button } from "@chakra-ui/react";
-import { AddIcon } from '@chakra-ui/icons'
+import React from "react";
+import axios from "axios";
 
-const Classify = () => {
+class Classify extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      prediction: null,
+    };
+    this.uploadImage = this.uploadImage.bind(this);
+  }
+
+  uploadImage(event) {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    axios
+      .post("http://localhost:5000/predict", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        this.setState({ prediction: response.data.prediction });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  render() {
+    const { prediction } = this.state;
+
     return (
-      <Box p="5em" color="#212121" w="75em">
-        <Text fontSize="xl">
-          Capture the beauty of your gemstone and let our advanced machine
-          learning algorithm unravel its true identity. Upload an image of your
-          gemstone below, and our powerful classification system will harness
-          the power of artificial intelligence to determine its precise gemstone
-          class.
-        </Text>
-        <Flex w="25em" h="15em" border="1px" align='center' justifyContent='center' mt='2em'>
-          <AddIcon mr='2'/>
-          <Text>Upload Image</Text>
-        </Flex>
-        <Button bg="#99627A" color="white" mt="1.5em" size="lg" px='3em'>
-          Classify
-        </Button>
-      </Box>
+      <div>
+        <input type="file" onChange={this.uploadImage} />
+        {prediction && <p>Prediction: {prediction}</p>}
+      </div>
     );
+  }
 }
 
 export default Classify;

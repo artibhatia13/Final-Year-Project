@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
+
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -8,20 +10,20 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
 # Load the trained model
 model = load_model('model_gemstones.h5')
-classes = ['Quartz Smoky', 'Coral', 'Bixbite', 'Lapis Lazuli', 'Blue Lace Agate', 'Tanzanite', 
-            'Malachite', 'Spodumene', 'Quartz Lemon', 'Kyanite', 'Pearl', 'Andradite', 
-            'Tourmaline', 'Prehnite', 'Aquamarine', 'Citrine', 'Onyx Red', 'Chrysoprase', 
-            'Alexandrite', 'Zoisite', 'Cats Eye', 'Amber', 'Topaz', 'Sapphire Pink', 
-            'Rhodochrosite', 'Variscite', 'Rhodonite', 'Fluorite', 'Hiddenite', 'Amethyst', 
-            'Turquoise', 'Andalusite', 'Moonstone', 'Goshenite', 'Chrysoberyl', 'Onyx Green', 
-            'Spinel', 'Tigers Eye', 'Chalcedony', 'Sapphire Blue', 'Chrome Diopside', 'Spessartite', 
-            'Larimar','Sphene', 'Emerald', 'Iolite', 'Peridot', 'Diaspore', 'Chrysocolla', 
-            'Pyrite', 'Jade', 'Aventurine Green', 'Danburite', 'Scapolite', 'Sapphire Yellow', 
-            'Ruby', 'Ametrine', 'Sodalite', 'Onyx Black', 'Hessonite', 'Zircon', 'Grossular', 
-            'Garnet Red', 'Chalcedony Blue', 'Sapphire Purple', 'Sunstone', 'Beryl Golden', 
-            'Morganite', 'Diamond', 'Jasper', 'Pyrope', 'Rhodolite', 'Carnelian', 
-            'Tsavorite', 'Labradorite', 'Dumortierite', 'Amazonite', 'Serpentine', 
-            'Aventurine Yellow', 'Almandine', 'Benitoite', 'Quartz Rose', 'Quartz Beer', 
+classes = ['Quartz Smoky', 'Coral', 'Bixbite', 'Lapis Lazuli', 'Blue Lace Agate', 'Tanzanite',
+            'Malachite', 'Spodumene', 'Quartz Lemon', 'Kyanite', 'Pearl', 'Andradite',
+            'Tourmaline', 'Prehnite', 'Aquamarine', 'Citrine', 'Onyx Red', 'Chrysoprase',
+            'Alexandrite', 'Zoisite', 'Cats Eye', 'Amber', 'Topaz', 'Sapphire Pink',
+            'Rhodochrosite', 'Variscite', 'Rhodonite', 'Fluorite', 'Hiddenite', 'Amethyst',
+            'Turquoise', 'Andalusite', 'Moonstone', 'Goshenite', 'Chrysoberyl', 'Onyx Green',
+            'Spinel', 'Tigers Eye', 'Chalcedony', 'Sapphire Blue', 'Chrome Diopside', 'Spessartite',
+            'Larimar','Sphene', 'Emerald', 'Iolite', 'Peridot', 'Diaspore', 'Chrysocolla',
+            'Pyrite', 'Jade', 'Aventurine Green', 'Danburite', 'Scapolite', 'Sapphire Yellow',
+            'Ruby', 'Ametrine', 'Sodalite', 'Onyx Black', 'Hessonite', 'Zircon', 'Grossular',
+            'Garnet Red', 'Chalcedony Blue', 'Sapphire Purple', 'Sunstone', 'Beryl Golden',
+            'Morganite', 'Diamond', 'Jasper', 'Pyrope', 'Rhodolite', 'Carnelian',
+            'Tsavorite', 'Labradorite', 'Dumortierite', 'Amazonite', 'Serpentine',
+            'Aventurine Yellow', 'Almandine', 'Benitoite', 'Quartz Rose', 'Quartz Beer',
             'Quartz Rutilated', 'Opal', 'Bloodstone', 'Kunzite']
 
 # Define the preprocessing function
@@ -64,15 +66,11 @@ def predict():
     preds = model.predict(x)[0]
     # Get the class label with the highest probability
     pred_class = classes[np.argmax(preds)]
-    # Render the result page with the predicted class label
-    return render_template('res.html', filename=filename, pred_class=pred_class)
+    # Return the predicted class label as JSON response
+    print(pred_class)
+    return jsonify({'prediction': pred_class})
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-
-
-
-
-
+CORS(app)  # Enable CORS to allow cross-origin requests
