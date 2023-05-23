@@ -5,6 +5,7 @@ import Auction from "./components/Auction.js";
 import Classify from "./components/Classify.js";
 import Verification from "./components/Verification.js";
 import Navbar from "./components/Navbar.js";
+import CertificateComponent from "./components/GenerateCertificate";
 
 
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/classify" element={<Classify />} />
         <Route path="/auction" element={<Auction />} />
         <Route path="/verification" element={<Verification />} />
+        <Route path="/generatecertificate" element={<CertificateComponent/>} />
       </Routes>
     </>
   );

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 from flask_cors import CORS
 
 import cv2
@@ -11,20 +11,20 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 # Load the trained model
 model = load_model('model_gemstones.h5')
 classes = ['Quartz Smoky', 'Coral', 'Bixbite', 'Lapis Lazuli', 'Blue Lace Agate', 'Tanzanite',
-            'Malachite', 'Spodumene', 'Quartz Lemon', 'Kyanite', 'Pearl', 'Andradite',
-            'Tourmaline', 'Prehnite', 'Aquamarine', 'Citrine', 'Onyx Red', 'Chrysoprase',
-            'Alexandrite', 'Zoisite', 'Cats Eye', 'Amber', 'Topaz', 'Sapphire Pink',
-            'Rhodochrosite', 'Variscite', 'Rhodonite', 'Fluorite', 'Hiddenite', 'Amethyst',
-            'Turquoise', 'Andalusite', 'Moonstone', 'Goshenite', 'Chrysoberyl', 'Onyx Green',
-            'Spinel', 'Tigers Eye', 'Chalcedony', 'Sapphire Blue', 'Chrome Diopside', 'Spessartite',
-            'Larimar','Sphene', 'Emerald', 'Iolite', 'Peridot', 'Diaspore', 'Chrysocolla',
-            'Pyrite', 'Jade', 'Aventurine Green', 'Danburite', 'Scapolite', 'Sapphire Yellow',
-            'Ruby', 'Ametrine', 'Sodalite', 'Onyx Black', 'Hessonite', 'Zircon', 'Grossular',
-            'Garnet Red', 'Chalcedony Blue', 'Sapphire Purple', 'Sunstone', 'Beryl Golden',
-            'Morganite', 'Diamond', 'Jasper', 'Pyrope', 'Rhodolite', 'Carnelian',
-            'Tsavorite', 'Labradorite', 'Dumortierite', 'Amazonite', 'Serpentine',
-            'Aventurine Yellow', 'Almandine', 'Benitoite', 'Quartz Rose', 'Quartz Beer',
-            'Quartz Rutilated', 'Opal', 'Bloodstone', 'Kunzite']
+           'Malachite', 'Spodumene', 'Quartz Lemon', 'Kyanite', 'Pearl', 'Andradite',
+           'Tourmaline', 'Prehnite', 'Aquamarine', 'Citrine', 'Onyx Red', 'Chrysoprase',
+           'Alexandrite', 'Zoisite', 'Cats Eye', 'Amber', 'Topaz', 'Sapphire Pink',
+           'Rhodochrosite', 'Variscite', 'Rhodonite', 'Fluorite', 'Hiddenite', 'Amethyst',
+           'Turquoise', 'Andalusite', 'Moonstone', 'Goshenite', 'Chrysoberyl', 'Onyx Green',
+           'Spinel', 'Tigers Eye', 'Chalcedony', 'Sapphire Blue', 'Chrome Diopside', 'Spessartite',
+           'Larimar', 'Sphene', 'Emerald', 'Iolite', 'Peridot', 'Diaspore', 'Chrysocolla',
+           'Pyrite', 'Jade', 'Aventurine Green', 'Danburite', 'Scapolite', 'Sapphire Yellow',
+           'Ruby', 'Ametrine', 'Sodalite', 'Onyx Black', 'Hessonite', 'Zircon', 'Grossular',
+           'Garnet Red', 'Chalcedony Blue', 'Sapphire Purple', 'Sunstone', 'Beryl Golden',
+           'Morganite', 'Diamond', 'Jasper', 'Pyrope', 'Rhodolite', 'Carnelian',
+           'Tsavorite', 'Labradorite', 'Dumortierite', 'Amazonite', 'Serpentine',
+           'Aventurine Yellow', 'Almandine', 'Benitoite', 'Quartz Rose', 'Quartz Beer',
+           'Quartz Rutilated', 'Opal', 'Bloodstone', 'Kunzite']
 
 # Define the preprocessing function
 def preprocess_image(img):
@@ -69,6 +69,36 @@ def predict():
     # Return the predicted class label as JSON response
     print(pred_class)
     return jsonify({'prediction': pred_class})
+
+@app.route('/generatecertificate', methods=['POST'])
+def certificate():
+    file = open("CertificateGeneration/GeneratedData/certificateData.txt", 'r')
+    f = file.readlines()
+
+    newList = []
+    for line in f:
+        newList.append(line.strip())
+
+    template = cv2.imread(
+        "CertificateGeneration/Jewellery_certificate_template.png")
+    cv2.putText(template, newList[0], (226, 176),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[1], (204, 217),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[2], (224, 307),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[3], (206, 344),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[4], (162, 421),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[5], (156, 461),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    cv2.putText(template, newList[6], (154, 498),
+                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+    # cv2.imwrite('../fyproject/images/certificates/certificate.jpg', template)
+    cv2.imwrite(
+        './CertificateGeneration/GeneratedCertificates/certificate.jpg', template)
+    return send_file("./CertificateGeneration/GeneratedCertificates/certificate.jpg", mimetype="image/jpg")
 
 if __name__ == '__main__':
     app.run(debug=True)
