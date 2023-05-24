@@ -1,6 +1,41 @@
-#btn_gradient{
-    background-image: linear-gradient(to right, #EF6BB4 0%, #c2839d 100%);
+body {
+  font-family: "Montserrat", sans-serif !important;
 }
-#btn_gradient:hover{
-    opacity: 0.8;
+button:hover {
+  background-color: #ae6f8a !important;
+  opacity: 0.7 !important;
+}
+#btn_gradient {
+  background-image: linear-gradient(to right, #ef6bb4 0%, #c2839d 100%);
+}
+#btn_gradient:hover {
+  opacity: 0.8;
+}
+input::file-selector-button {
+  background-color: #ae6f8a;
+  color: white;
+  font-weight: bold;
+  padding: 0.5em 1.5em 0.5em 1.5em;
+  margin-top: 2em;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+#text_bold {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+#card_hover {
+  background-image: linear-gradient(to right, #ef6bb421 0%, #bc155a2e 100%);
+  cursor: pointer;
+}
+#card_hover:hover {
+  background-image: linear-gradient(to right, #ef6bb43e 0%, #bc155b46 100%);
+}
+#line {
+  height: 1px;
+  width: 100%;
+  background-color: #e0e0e0;
 }
