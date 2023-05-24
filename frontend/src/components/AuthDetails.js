@@ -1,53 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import {useNavigate} from 'react-router-dom';
-
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { UserAuth } from "../context/AuthContext";
 
 const AuthDetails = () => {
-  const [authUser, setAuthUser] = useState(null);
+  const { user, logout } = UserAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const listen = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setAuthUser(user);
-      } else {
-        setAuthUser(null);
-      }
-    });
-
-    return () => {
-      listen();
-    };
-  }, []);
-
-  const userSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("Signed Out Successfully");
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/signin");
+      console.log("You are logged out");
+    } catch (e) {
+      console.log(e.message);
+    }
   };
-
   const navigateToLogIn = () => {
-      navigate('/signin')
+    navigate("/signin");
   };
   return (
     <div>
-      {authUser ? (
-        <>
-          <p>{`Signed In as ${authUser.email}`}</p>
-          <button onClick={userSignOut}>Sign Out</button>
-        </>
-      ) : (
-        <>
-          <p>Signed Out</p>
-          <button onClick={navigateToLogIn}>Log In</button>
-        </>
-      )}
+      <p>User Email: {user && user.email}</p>
+      <button onClick={handleLogout} className="border px-6 py-2 my-4">
+        Logout
+      </button>
     </div>
   );
 };
