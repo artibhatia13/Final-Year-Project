@@ -1,36 +1,93 @@
 import React, { useState } from "react";
-import { Text, Box, Image, Flex, Button } from "@chakra-ui/react";
+import {
+  Text,
+  Box,
+  Image,
+  Flex,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import { storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import StartAuction from "./StartAuction";
 
 const Classify = () => {
   const [prediction, setPrediction] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageUpload, setImageUpload] = useState(null);
+  const [url, setURL] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const uploadImage = (event) => {
-    const file = event.target.files[0];
+  const onPrediction = async () => {
+    if (prediction) {
+      try {
+        const imageRef = ref(storage, `gemstone_images/${prediction + v4()}`);
+        const uploadTaskSnapshot = await uploadBytes(imageRef, imageUpload);
+        alert("Image Uploaded to Firebase Storage");
+
+        // Get the download URL of the uploaded image
+        const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
+        console.log("Download URL:", downloadURL);
+        setURL(downloadURL);
+        // Perform any further actions with the download URL
+      } catch (error) {
+        console.error("Error uploading image or getting download URL:", error);
+      }
+    }
+  };
+
+  const uploadImage = async (event) => {
+    if (imageUpload == null) return;
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", imageUpload);
 
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result);
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(imageUpload);
 
-    axios
-      .post("http://localhost:5000/predict", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setPrediction(response.data.prediction);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/predict",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setPrediction(response.data.prediction);
+      console.log(prediction);
+    } catch (error) {
+      console.error(error);
+    }
+
+    onPrediction();
+  };
+
+  const handleStartAuction = () => {
+    // Define the props to pass to the "Start Auction" component
+    const auctionProps = {
+      // Your props here
+    };
+
+    // Open the modal and pass the props
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    // Close the modal
+    setIsModalOpen(false);
   };
 
   return (
@@ -47,7 +104,13 @@ const Classify = () => {
         class.
       </Text>
       <Box>
-        <input type="file" onChange={uploadImage} id="file_upload" />
+        <input
+          type="file"
+          onChange={(e) => {
+            setImageUpload(e.target.files[0]);
+          }}
+        />
+        <Button onClick={uploadImage}>Upload Image </Button>
 
         {imagePreview && (
           <Box mt="2em">
@@ -77,21 +140,36 @@ const Classify = () => {
               {prediction}!
             </Text>
             <Flex justify="end">
-              <Link to="/startauction">
-                <Button
-                  rightIcon={<ArrowForwardIcon />}
-                  bg="#ae6f8a"
-                  color="white"
-                  size="lg"
-                  mr="23.1em"
-                  mt="2px"
-                  borderTopRightRadius="none"
-                  borderBottomLeftRadius="none"
-                >
-                  Start Auction
-                </Button>
-              </Link>
+              {/* <Link to="/startauction"> */}
+              <Button
+                rightIcon={<ArrowForwardIcon />}
+                bg="#ae6f8a"
+                color="white"
+                size="lg"
+                mr="23.1em"
+                mt="2px"
+                borderTopRightRadius="none"
+                borderBottomLeftRadius="none"
+                onClick={handleStartAuction}
+              >
+                Start Auction
+              </Button>
+              {/* </Link> */}
             </Flex>
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal} size="50%">
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Start Auction</ModalHeader>
+                <ModalBody>
+                  <StartAuction prediction={prediction} url={url} />
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="blue" mr={3} onClick={handleCloseModal}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </>
         )}
       </Box>
