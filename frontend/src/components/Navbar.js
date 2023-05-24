@@ -22,12 +22,16 @@ const Navbar = () => {
             <Text fontSize="lg">Retail Store</Text>
           </Link>
           <Spacer />
-          <Button bg="#99627A" color="white" size="lg">
-            Sign Up
-          </Button>
-          <Button bg="#99627A" color="white" size="lg">
-            Log in
-          </Button>
+          <Link to="/signup">
+            <Button bg="#99627A" color="white" size="lg">
+              Sign Up
+            </Button>
+          </Link>
+          <Link to="/signin">
+            <Button bg="#99627A" color="white" size="lg">
+              Log in
+            </Button>
+          </Link>
         </Flex>
       </Flex>
     </div>
