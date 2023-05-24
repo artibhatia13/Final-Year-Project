@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
@@ -10,39 +10,30 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import "../App.css";
+import { db } from "../firebase";
+import { ref, onValue } from "firebase/database";
 
-const gem_List = [
-  {
-    id: 1,
-    img: "/gem1.jpg",
-    name: "Aventurine Yellow",
-    no_of_bid: "12",
-    high_bid: "2,00,000",
-    time_left: "1:52",
-  },
-  {
-    id: 2,
-    img: "/gem2.jpg",
-    name: "Benitoite",
-    no_of_bid: "35",
-    high_bid: "5,40,000",
-    time_left: "6:12",
-  },
-  {
-    id: 3,
-    img: "/gem3.jpg",
-    name: "Carnelian",
-    no_of_bid: "28",
-    high_bid: "1,93,000",
-    time_left: "4:38",
-  },
-];
+const Card = (item, index) => {
+  const {
+    auctionEnd,
+    auctionStart,
+    bids,
+    email,
+    gemColor,
+    gemLocation,
+    gemName,
+    gemWeight,
+    highest_bid,
+    id,
+    isAuctioned,
+    minBidAmount,
+    url,
+  } = item;
 
-const Card = (item) => {
   return (
-    <Box boxShadow="lg" borderRadius="lg" key={item.id} mr="4em">
+    <Box boxShadow="lg" borderRadius="lg" key={index} mr="4em">
       <Flex justifyContent="right">
-        <Link to={"/auction/" + item.id}>
+        <Link to={"/auction/" + index}>
           <Button
             bg="#C88EA7"
             color="white"
@@ -55,7 +46,7 @@ const Card = (item) => {
         </Link>
       </Flex>
       <Image
-        src={item.img}
+        src={url}
         alt="gem_img"
         w="24em"
         h="20em"
@@ -64,27 +55,27 @@ const Card = (item) => {
         borderTopRadius="lg"
       />
       <Text fontSize="xl" fontWeight="bold" p="3">
-        {item.name}
+        {gemName.prediction}
       </Text>
       <Divider />
       <Flex p="1em">
         <Box>
           <Text fontSize="xs" as="b">
-            {item.no_of_bid} BIDS
+            {bids} BIDS
           </Text>
           <br />
           <Text fontSize="lg" as="b" color="#643843">
-            ${item.high_bid}
+            ${highest_bid}
           </Text>
         </Box>
         <Spacer />
         <Box>
           <Text fontSize="xs" as="b">
-            Time Left
+            End Time
           </Text>
           <br />
           <Text fontSize="lg" as="b" color="#b71c1c">
-            {item.time_left} mins
+            {auctionEnd} hrs
           </Text>
         </Box>
       </Flex>
@@ -93,9 +84,30 @@ const Card = (item) => {
 };
 
 const Auction = () => {
+  const [gadata, setGAData] = useState([]);
+
+  useEffect(() => {
+    const query = ref(db, "gemstoneAuctionRecords/");
+    return onValue(
+      query,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (snapshot.exists()) {
+          console.log(data);
+          Object.values(data).map((ga)=>{
+            setGAData((gadata)=>[...gadata,ga]);
+          })
+        } else {
+          console.log("Data not found");
+        }
+      },
+    );
+  }, []);
+
   return (
     <Box>
-      <Flex>{gem_List.map((item) => Card(item))}</Flex>
+      Auction
+      <Flex>{gadata.map((item, index) => Card(item, index))}</Flex>
     </Box>
   );
 };

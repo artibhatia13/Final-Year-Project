@@ -16,7 +16,8 @@ const firebaseConfig = {
   storageBucket: "gemstone-ee3f0.appspot.com",
   messagingSenderId: "435024490782",
   appId: "1:435024490782:web:2bdec59365cbafaaad590f",
-  measurementId: "G-SB96ZLL2HW"
+  measurementId: "G-SB96ZLL2HW",
+  databaseURL: "https://gemstone-ee3f0-default-rtdb.firebaseio.com",
 };
 
 // Initialize Firebase
@@ -26,5 +27,5 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
 export const storage = getStorage(app);
-export const database = getDatabase(app);
+export const db = getDatabase(app);
 

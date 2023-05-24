@@ -10,6 +10,8 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+import { v4 } from "uuid";
+
 
 const StartAuction = ({ prediction, url }) => {
   const { user } = UserAuth();
@@ -45,6 +47,8 @@ const StartAuction = ({ prediction, url }) => {
     const email = user.email;
     const isAuctioned = false;
     const bids=0;
+    const highest_bid = 0;
+    const id=v4();
     if (
       gemName &&
       gemWeight &&
@@ -62,6 +66,7 @@ const StartAuction = ({ prediction, url }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            id,
             email,
             gemName,
             gemWeight,
@@ -72,7 +77,8 @@ const StartAuction = ({ prediction, url }) => {
             auctionEnd,
             minBidAmount,
             isAuctioned,
-            bids
+            bids,
+            highest_bid
           }),
         }
       );
