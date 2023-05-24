@@ -44,6 +44,7 @@ const StartAuction = ({ prediction, url }) => {
     } = gemstoneAuction;
     const email = user.email;
     const isAuctioned = false;
+    const bids=0;
     if (
       gemName &&
       gemWeight &&
@@ -70,7 +71,8 @@ const StartAuction = ({ prediction, url }) => {
             auctionStart,
             auctionEnd,
             minBidAmount,
-            isAuctioned
+            isAuctioned,
+            bids
           }),
         }
       );
