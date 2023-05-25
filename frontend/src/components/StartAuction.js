@@ -51,6 +51,10 @@ const StartAuction = ({ prediction, url }) => {
     const highest_bid = 0;
     const id = v4();
     const maxbiduser = "";
+    const isGemstone = true;
+    const metalUsed = "";
+    const grossWt = "";
+    const jewelleryUrl = "";
     if (
       gemName &&
       gemWeight &&
@@ -75,6 +79,10 @@ const StartAuction = ({ prediction, url }) => {
         bids,
         highest_bid,
         maxbiduser,
+        isGemstone,
+        metalUsed,
+        grossWt,
+        jewelleryUrl
       });
       alert("Auction and gemstone details stored");
     } catch(e) {
