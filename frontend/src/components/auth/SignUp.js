@@ -11,6 +11,8 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { UserAuth } from "../../context/AuthContext";
+import { collection, addDoc } from "firebase/firestore";
+import { firestore } from "../../firebase";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -19,6 +21,7 @@ const SignUp = () => {
   const [error, setError] = useState("");
   const { createUser } = UserAuth();
   const navigate = useNavigate();
+  // const usersRef = collection(firestore, "users");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +34,19 @@ const SignUp = () => {
       setError(e.message);
       console.log(error);
     }
+
+    try {
+      const docRef = await addDoc(collection(firestore, "users"), {
+        user: email,
+        password: password,
+        role: role,
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
+
   return (
     <>
       <Flex justify="center" mt="-2em">
