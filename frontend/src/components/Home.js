@@ -16,7 +16,6 @@ const Home = () => {
             ml="8"
             mr="2"
           />
-          ,
         </Flex>
       </Text>
       <Text fontSize="2xl" mt="1em">

@@ -10,13 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
-import { v4 } from "uuid";
-
 
 const StartAuction = ({ prediction, url }) => {
   const { user } = UserAuth();
+  const [nextId, setNextId] = useState(0);
   const [gemstoneAuction, setGemstoneAuction] = useState({
-    gemName:{prediction},
+    gemName: prediction,
     gemWeight: "",
     gemColor: "",
     auctionStart: "",
@@ -42,13 +41,13 @@ const StartAuction = ({ prediction, url }) => {
       auctionStart,
       auctionEnd,
       minBidAmount,
-      gemLocation
+      gemLocation,
     } = gemstoneAuction;
     const email = user.email;
     const isAuctioned = false;
-    const bids=0;
+    const bids = 0;
     const highest_bid = 0;
-    const id=v4();
+    const id = nextId;
     if (
       gemName &&
       gemWeight &&
@@ -78,12 +77,13 @@ const StartAuction = ({ prediction, url }) => {
             minBidAmount,
             isAuctioned,
             bids,
-            highest_bid
+            highest_bid,
           }),
         }
       );
       if (res) {
         alert("Auction and gemstone details stored");
+        setNextId(res.length)
       } else {
         alert("Please fill the data");
       }

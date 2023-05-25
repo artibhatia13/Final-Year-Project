@@ -31,9 +31,9 @@ const Card = (item, index) => {
   } = item;
 
   return (
-    <Box boxShadow="lg" borderRadius="lg" key={index} mr="4em">
+    <Box boxShadow="lg" borderRadius="lg" key={id} mr="4em">
       <Flex justifyContent="right">
-        <Link to={"/auction/" + index}>
+        <Link to={"/auction/" + id}>
           <Button
             bg="#C88EA7"
             color="white"
