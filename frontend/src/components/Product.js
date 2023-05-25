@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import { Box, Image, Flex, Text, Input, Button } from "@chakra-ui/react";
 import { TimeIcon } from "@chakra-ui/icons";
 import { UserAuth } from "../context/AuthContext";
+import { db } from "../firebase";
+import {ref, update} from "firebase/database"
 
 const Product = () => {
   const { id } = useParams();
   const [record, setRecord] = useState(null);
-  const [bid, setBid] = useState(0);
+  const [currentBid, setCurrentBid] = useState(0);
   const { user } = UserAuth();
 
   useEffect(() => {
@@ -16,8 +18,7 @@ const Product = () => {
         `https://gemstone-ee3f0-default-rtdb.firebaseio.com/gemstoneAuctionRecords.json?${id}"`
       );
       const data = await response.json();
-      const recordId = Object.keys(data)[0];
-      const recordData = data[recordId];
+      const recordData = Object.values(data).find((record) => record.id === id);
       setRecord(recordData);
     };
     getRecordByUniqueField(id);
@@ -25,12 +26,39 @@ const Product = () => {
 
   useEffect(() => {
     if (record) {
-      console.log("record", record, record.url);
+      console.log("record", record);
     }
   }, [record]);
 
-  const updateRTDB = () => {
+  const updateRTDB =  async () => {    
     console.log(user.email)
+    const newBids = record.bids + 1;
+    const gemRef = ref(db, `gemstoneAuctionRecords/${id}`);
+    const updates = {
+      bids: newBids
+    };
+    try {
+      await update(gemRef, updates);
+      console.log("Bids field updated successfully");
+      setRecord((prevRecord) => ({ ...prevRecord, bids: newBids }));
+    } catch (error) {
+      console.log("Error updating bids field:", error.message);
+    }
+    const newMaxBid = Math.max(record.highest_bid, currentBid);
+    if (newMaxBid === currentBid) {
+      const newMaxBidUser = user.email;
+      const updates = {
+        maxbiduser: newMaxBidUser,
+        highest_bid: newMaxBid
+      }
+      try {
+        await update(gemRef, updates);
+        console.log("Max bid details updated successfully");
+        setRecord((prevRecord) => ({ ...prevRecord, highest_bid: newMaxBid }));
+      } catch (error) {
+        console.log("Error updating bids field:", error.message);
+      }
+    }
   }
   return (
     <Box>
@@ -69,10 +97,10 @@ const Product = () => {
 
             <Flex justifyContent="space-between" mt="3em">
               <Text fontSize="xl" fontWeight="700">
-                Current Price:
+                Current Highest Bid:
               </Text>
               <Text fontSize="xl" fontWeight="700">
-                ${record.high_bid}
+                ${record.highest_bid}
               </Text>
             </Flex>
             <Flex justifyContent="space-between" mt="1.5em">
@@ -81,7 +109,7 @@ const Product = () => {
             </Flex>
             <Flex justifyContent="space-between" mt="2em">
               <Text fontSize="xl">Set Your Maximum Bid:</Text>
-              <Input placeholder="Amount" w="15em" size="md" onChange={(e)=>{setBid(e.target.value)}} />
+              <Input placeholder="Amount" w="15em" size="md" onChange={(e)=>{setCurrentBid(e.target.value)}} />
             </Flex>
 
             <Button

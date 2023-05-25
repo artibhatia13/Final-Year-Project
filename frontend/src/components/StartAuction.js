@@ -10,10 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+import { v4 } from "uuid";
+import {set, ref} from "firebase/database";
+import {db} from "../firebase";
 
 const StartAuction = ({ prediction, url }) => {
   const { user } = UserAuth();
-  const [nextId, setNextId] = useState(0);
   const [gemstoneAuction, setGemstoneAuction] = useState({
     gemName: prediction,
     gemWeight: "",
@@ -47,7 +49,7 @@ const StartAuction = ({ prediction, url }) => {
     const isAuctioned = false;
     const bids = 0;
     const highest_bid = 0;
-    const id = nextId;
+    const id = v4();
     const maxbiduser = "";
     if (
       gemName &&
@@ -57,39 +59,26 @@ const StartAuction = ({ prediction, url }) => {
       auctionEnd &&
       minBidAmount &&
       gemLocation
-    ) {
-      const res = fetch(
-        "https://gemstone-ee3f0-default-rtdb.firebaseio.com/gemstoneAuctionRecords.json",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id,
-            email,
-            gemName,
-            gemWeight,
-            gemColor,
-            gemLocation,
-            url,
-            auctionStart,
-            auctionEnd,
-            minBidAmount,
-            isAuctioned,
-            bids,
-            highest_bid,
-            maxbiduser,
-          }),
-        }
-      );
-      if (res) {
-        alert("Auction and gemstone details stored");
-      } else {
-        alert("Please fill the data");
-      }
-    } else {
-      alert("Please fill the data");
+    ) try {
+      set(ref(db, "gemstoneAuctionRecords/" + id), {
+        id,
+        email,
+        gemName,
+        gemWeight,
+        gemColor,
+        gemLocation,
+        url,
+        auctionStart,
+        auctionEnd,
+        minBidAmount,
+        isAuctioned,
+        bids,
+        highest_bid,
+        maxbiduser,
+      });
+      alert("Auction and gemstone details stored");
+    } catch(e) {
+      alert(e);
     }
   };
 
