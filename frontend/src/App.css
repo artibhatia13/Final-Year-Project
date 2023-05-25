@@ -11,7 +11,7 @@ button:hover {
 #btn_gradient:hover {
   opacity: 0.8;
 }
-input::file-selector-button {
+/* input::file-selector-button {
   background-color: #ae6f8a;
   color: white;
   font-weight: bold;
@@ -21,7 +21,7 @@ input::file-selector-button {
   border-radius: 6px;
   font-size: 16px;
   cursor: pointer;
-}
+} */
 #text_bold {
   font-weight: bold;
   text-transform: uppercase;

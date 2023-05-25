@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -103,18 +104,27 @@ const Classify = () => {
         power of artificial intelligence to determine its precise gemstone
         class.
       </Text>
-      <Box>
+      <Box mt="2em">
         <input
           type="file"
           onChange={(e) => {
             setImageUpload(e.target.files[0]);
           }}
         />
-        <Button onClick={uploadImage}>Upload Image </Button>
+        <br />
+        <Button
+          onClick={uploadImage}
+          mt="1em"
+          bg="#99627A"
+          color="white"
+          size="lg"
+        >
+          Upload Image{" "}
+        </Button>
 
         {imagePreview && (
           <Box mt="2em">
-            <Text fontSize="lg">Uploaded Image:</Text>
+            {/* <Text fontSize="lg">Uploaded Image:</Text> */}
             <Flex boxShadow="base" align="center" borderRadius="lg" w="44em">
               <Image
                 src={imagePreview}
@@ -156,18 +166,24 @@ const Classify = () => {
               </Button>
               {/* </Link> */}
             </Flex>
-            <Modal isOpen={isModalOpen} onClose={handleCloseModal} size="50%">
+            <Modal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              size="xl"
+              scrollBehavior="inside"
+            >
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Start Auction</ModalHeader>
+                <ModalHeader>Detials Form</ModalHeader>
+                <ModalCloseButton />
                 <ModalBody>
                   <StartAuction prediction={prediction} url={url} />
                 </ModalBody>
-                <ModalFooter>
+                {/* <ModalFooter>
                   <Button colorScheme="blue" mr={3} onClick={handleCloseModal}>
                     Close
                   </Button>
-                </ModalFooter>
+                </ModalFooter> */}
               </ModalContent>
             </Modal>
           </>

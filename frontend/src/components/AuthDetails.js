@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
+import { Button, Box, Text, Flex } from "@chakra-ui/react";
 
 const AuthDetails = () => {
   const { user, logout } = UserAuth();
@@ -18,12 +19,21 @@ const AuthDetails = () => {
     navigate("/signin");
   };
   return (
-    <div>
-      <p>User Email: {user && user.email}</p>
-      <button onClick={handleLogout} className="border px-6 py-2 my-4">
+    <Box>
+      <Text fontSize="5xl">Your Profile</Text>
+      <Text fontSize="lg" mt="2em">
+        <span id="text_bold">User Email:</span> {user && user.email}
+      </Text>
+      <Button
+        onClick={handleLogout}
+        bg="#99627A"
+        color="white"
+        mt="1em"
+        size="md"
+      >
         Logout
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 
