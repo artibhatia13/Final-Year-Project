@@ -48,6 +48,7 @@ const StartAuction = ({ prediction, url }) => {
     const bids = 0;
     const highest_bid = 0;
     const id = nextId;
+    const maxbiduser = "";
     if (
       gemName &&
       gemWeight &&
@@ -78,12 +79,12 @@ const StartAuction = ({ prediction, url }) => {
             isAuctioned,
             bids,
             highest_bid,
+            maxbiduser,
           }),
         }
       );
       if (res) {
         alert("Auction and gemstone details stored");
-        setNextId(res.length)
       } else {
         alert("Please fill the data");
       }

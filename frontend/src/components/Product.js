@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Image, Flex, Text, Input, Button } from "@chakra-ui/react";
 import { TimeIcon } from "@chakra-ui/icons";
+import { UserAuth } from "../context/AuthContext";
 
 const Product = () => {
   const { id } = useParams();
   const [record, setRecord] = useState(null);
+  const [bid, setBid] = useState(0);
+  const { user } = UserAuth();
 
   useEffect(() => {
     const getRecordByUniqueField = async (id) => {
@@ -26,6 +29,9 @@ const Product = () => {
     }
   }, [record]);
 
+  const updateRTDB = () => {
+    console.log(user.email)
+  }
   return (
     <Box>
       {record && (
@@ -75,7 +81,7 @@ const Product = () => {
             </Flex>
             <Flex justifyContent="space-between" mt="2em">
               <Text fontSize="xl">Set Your Maximum Bid:</Text>
-              <Input placeholder="Amount" w="15em" size="md" />
+              <Input placeholder="Amount" w="15em" size="md" onChange={(e)=>{setBid(e.target.value)}} />
             </Flex>
 
             <Button
@@ -86,6 +92,7 @@ const Product = () => {
               w="100%"
               mt="2em"
               py="1.3em"
+              onClick = {updateRTDB}
             >
               Place My Bid
             </Button>
