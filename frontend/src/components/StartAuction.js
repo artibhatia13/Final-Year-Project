@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import {
-  Text,
   Button,
   Box,
   Input,
-  Flex,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
@@ -14,10 +12,10 @@ import { v4 } from "uuid";
 import {set, ref} from "firebase/database";
 import {db} from "../firebase";
 
-const StartAuction = ({ prediction, url }) => {
+const StartAuction = ({ url }) => {
   const { user } = UserAuth();
   const [gemstoneAuction, setGemstoneAuction] = useState({
-    gemName: prediction,
+    gemName: "",
     gemWeight: "",
     gemColor: "",
     auctionStart: "",
@@ -103,7 +101,7 @@ const StartAuction = ({ prediction, url }) => {
             w="20em"
             placeholder="Gemstone Name"
             name="gemName"
-            value={prediction}
+            value={gemstoneAuction.gemName}
             onChange={postData}
           />
         </FormControl>

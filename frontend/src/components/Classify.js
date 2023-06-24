@@ -32,7 +32,6 @@ const Classify = () => {
       try {
         const imageRef = ref(storage, `gemstone_images/${prediction + v4()}`);
         const uploadTaskSnapshot = await uploadBytes(imageRef, imageUpload);
-        alert("Image Uploaded to Firebase Storage");
 
         // Get the download URL of the uploaded image
         const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
@@ -177,7 +176,7 @@ const Classify = () => {
                 <ModalHeader>Detials Form</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  <StartAuction prediction={prediction} url={url} />
+                  <StartAuction url={url} />
                 </ModalBody>
                 {/* <ModalFooter>
                   <Button colorScheme="blue" mr={3} onClick={handleCloseModal}>
