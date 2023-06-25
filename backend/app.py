@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 import cv2
 import numpy as np
+import subprocess
 from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
@@ -70,37 +71,57 @@ def predict():
     print(pred_class)
     return jsonify({'prediction': pred_class})
 
-@app.route('/generatecertificate', methods=['POST'])
+@app.route('/generatecertificate', methods=['POST','GET'])
 def certificate():
-    file = open("CertificateGeneration/GeneratedData/certificateData.txt", 'r')
-    f = file.readlines()
+    if request.method == 'POST':
+        data = request.get_json()
+        newList = []
+        for item in data:
+            newList.append(item)
+        
+        template = cv2.imread(
+            "CertificateGeneration/certificate.png")
 
-    newList = []
-    for line in f:
-        newList.append(line.strip())
+        cv2.putText(template, newList[0], (735, 300),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[1], (735, 330),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[2], (735, 360),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[3], (735, 390),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[4], (735, 420),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[5], (735, 450),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.putText(template, newList[6], (735, 480),
+                    cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+        cv2.imwrite(
+            './CertificateGeneration/GeneratedCertificates/certificate.jpg', template)
 
-    template = cv2.imread(
-        "CertificateGeneration/Jewellery_certificate_template.png")
-    cv2.putText(template, newList[0], (226, 176),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[1], (204, 217),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[2], (224, 307),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[3], (206, 344),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[4], (162, 421),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[5], (156, 461),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    cv2.putText(template, newList[6], (154, 498),
-                cv2.FONT_HERSHEY_COMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
-    # cv2.imwrite('../fyproject/images/certificates/certificate.jpg', template)
-    cv2.imwrite(
-        './CertificateGeneration/GeneratedCertificates/certificate.jpg', template)
-    return send_file("./CertificateGeneration/GeneratedCertificates/certificate.jpg", mimetype="image/jpg")
+        subprocess.call(['./script.sh'])
+        return send_file("./CertificateGeneration/GeneratedCertificates/certificate.jpg", mimetype="image/jpeg")
+
+    else:
+        print('GET REQUEST')
+        template = cv2.imread(
+            "CertificateGeneration/certificate.png")
+        def get_coordinates(event, x, y, flags, param):
+            if event == cv2.EVENT_LBUTTONDOWN:
+                print(f"Clicked coordinates: ({x}, {y})")
+
+
+        # Create a window and set mouse callback function
+        cv2.namedWindow("Template Image")
+        cv2.setMouseCallback("Template Image", get_coordinates)
+
+        # Display the template image and wait for a mouse click
+        cv2.imshow("Template Image", template)
+        cv2.waitKey(0)
+
+        return jsonify({'message': 'No certificate to return'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='localhost', port=5000,debug=True)
 
 CORS(app)  # Enable CORS to allow cross-origin requests

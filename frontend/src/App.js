@@ -6,7 +6,7 @@ import Auction from "./components/Auction.js";
 import Classify from "./components/Classify.js";
 import Verification from "./components/Verification.js";
 import Navbar from "./components/Navbar.js";
-import CertificateComponent from "./components/GenerateCertificate";
+import GenerateCertificate from "./components/GenerateCertificate";
 import Product from "./components/Product.js";
 import StartAuction from "./components/StartAuction.js";
 import RetailOwnerHomePage from "./components/RetailOwnerHomePage.js";
@@ -34,7 +34,7 @@ function App() {
             <Route path="/retailstore" element={<RetailOwnerHomePage />} />
             <Route
               path="/generatecertificate"
-              element={<CertificateComponent />}
+              element={<GenerateCertificate />}
             />
           </Routes>
         </AuthContextProvider>
